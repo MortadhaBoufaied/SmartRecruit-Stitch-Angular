@@ -1,4 +1,4 @@
-# Stage 1: Build the Angular application
+﻿# Stage 1: Build the Angular application
 FROM node:18-alpine AS build
 
 WORKDIR /app
@@ -21,8 +21,11 @@ FROM nginx:alpine
 # Remove default nginx html directory
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copy built assets from build stage
-COPY --from=build /app/dist/smartrecruit /usr/share/nginx/html
+# Copy built assets from build stage (Angular 17+ uses browser subfolder)
+COPY --from=build /app/dist/smartrecruit/browser /usr/share/nginx/html
+
+# Copy custom nginx config for SPA routing
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80
 EXPOSE 80
